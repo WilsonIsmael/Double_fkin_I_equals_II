@@ -8,6 +8,11 @@ package mes;
 
 import java.io.*;
 import java.net.*;
+import net.wimpi.modbus.*;
+import net.wimpi.modbus.msg.*;
+import net.wimpi.modbus.io.*;
+import net.wimpi.modbus.net.*;
+import net.wimpi.modbus.util.*;
 
 class Protocol
 {
@@ -17,7 +22,7 @@ class Protocol
         DatagramSocket serverSocket = new DatagramSocket(54321);
         // creates array of bytes (receiveData and sendData)
         byte[] receiveData = new byte[1024];
-        byte[] sendData = new byte[1024];
+        //byte[] sendData = new byte[1024];
         
         while(true)
         {
@@ -40,9 +45,20 @@ class Protocol
         }
       }
    
+  /*public class DITest {
+
+  public static void modbusMasterTCP(String[] args) {
+    try {
+      ...
+      ...
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    }
+  }//main
+  
+}//class DITest
    
    
    
-   
-   
+ */
 }

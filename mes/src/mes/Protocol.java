@@ -1,3 +1,5 @@
+
+
 package mes;
 
 import java.io.*;
@@ -10,12 +12,12 @@ import net.wimpi.modbus.util.*;
 
 
 
-class Protocol
+public class Protocol
 {
     public int id;
     public int port;
     
-    public Protocol(int id, int port)
+    public Protocol(int id, int port)       // Pode não ser necessário.
     {
         id = 1;
         port = 54321;
@@ -25,6 +27,7 @@ class Protocol
       {
         // creates new datagram socket (Port: 54321)  
         DatagramSocket serverSocket = new DatagramSocket(54321);
+        
         // creates array of bytes (receiveData and sendData)
         byte[] receiveData = new byte[1024];
        
@@ -41,20 +44,75 @@ class Protocol
         }
       }
    
-  /*public class DITest {
+ 
 
-  public static void modbusMasterTCP(String[] args) {
-    try {
-      ...
-      ...
-    } catch (Exception ex) {
-      ex.printStackTrace();
+    public static void modbusMasterTCP(String[] args) 
+    {
+    try 
+        {
+        /* The important instances of the classes mentioned before */
+        TCPMasterConnection con = null; //the connection
+        
+        ModbusTCPTransaction trans = null; //the transaction
+        
+        ReadInputDiscretesRequest req = null; //the request
+        
+        ReadInputDiscretesResponse res = null; //the response
+
+        /* Variables for storing the parameters */
+        InetAddress addr = null;            //the slave's address
+        int port = Modbus.DEFAULT_PORT;
+        int ref = 0;                        //the reference; offset where to start reading from
+        int count = 0;                      //the number of DI's to read
+        int repeat = 1;                      //a loop for repeating the transaction
+        
+        //1. Setup the parameters
+        if (args.length < 3) 
+            {
+            System.exit(1);
+            } 
+        else 
+            {
+            try 
+                {
+                String astr = args[0];
+                int idx = astr.indexOf(':');
+                if(idx > 0)
+                    {
+                    port = Integer.parseInt(astr.substring(idx+1));
+                    astr = astr.substring(0,idx);
+                    }
+                addr = InetAddress.getByName(astr);
+                ref = Integer.decode(args[1]).intValue();
+                count = Integer.decode(args[2]).intValue();
+                if (args.length == 4) 
+                    {
+                    repeat = Integer.parseInt(args[3]);
+                    }
+                }
+            catch (Exception ex) 
+                {
+                ex.printStackTrace();
+                System.exit(1);
+                }
+            }
+        //2. Open the connection
+        con = new TCPMasterConnection(addr);
+        con.setPort(port);
+        con.connect();
+
+        //3. Prepare the request
+        req = new ReadInputDiscretesRequest(ref, count);
+
+        //4. Prepare the transaction
+        trans = new ModbusTCPTransaction(con);
+        trans.setRequest(req);
+        } 
+    
+    catch (Exception ex) 
+        {
+        ex.printStackTrace();
+        }
     }
-  }//main
-  
-}//class DITest
-   
-   
-   
- */
+
 }

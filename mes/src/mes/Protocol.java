@@ -96,6 +96,7 @@ public class Protocol
                 System.exit(1);
                 }
             }
+        
         //2. Open the connection
         con = new TCPMasterConnection(addr);
         con.setPort(port);
@@ -107,12 +108,32 @@ public class Protocol
         //4. Prepare the transaction
         trans = new ModbusTCPTransaction(con);
         trans.setRequest(req);
-        } 
+        
     
-    catch (Exception ex) 
-        {
-        ex.printStackTrace();
-        }
-    }
+        //5. Execute the transaction repeat times
+        int k = 0;
+        do {
+            trans.execute();
+            res = (ReadInputDiscretesResponse) trans.getResponse();
+            System.out.println("Digital Inputs Status=" + res.getDiscretes().toString());
+            k++;
+            }  while (k < repeat);
 
+        //6. Close the connection
+            con.close();
+        
+        }
+        catch (Exception ex) 
+            {   
+            ex.printStackTrace();
+            System.exit(1);
+            }
+    
+    
+        
+    }
+    
+    
+    
+    
 }

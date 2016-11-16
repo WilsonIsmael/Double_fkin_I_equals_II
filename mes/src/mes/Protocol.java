@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package mes;
 
 import java.io.*;
@@ -11,7 +5,16 @@ import java.net.*;
 
 class Protocol
 {
-   public static void UDPServer(String args[]) throws Exception
+    public int id;
+    public int port;
+    
+    public Protocol(int id, int port)
+    {
+        id = 1;
+        port = 54321;
+    }
+    
+    public static void UDPServer() throws Exception
       {
         // creates new datagram socket (Port: 54321)  
         DatagramSocket serverSocket = new DatagramSocket(54321);
@@ -28,7 +31,6 @@ class Protocol
             String sentence = new String( receivePacket.getData());
             // prints the sentence
             System.out.println("RECEIVED: " + sentence);
-
         }
       }
 }

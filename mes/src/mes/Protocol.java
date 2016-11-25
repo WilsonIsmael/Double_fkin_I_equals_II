@@ -14,16 +14,73 @@ import net.wimpi.modbus.util.*;
 
 public class Protocol
 {
-    public int id;
-    public int port;
+    private int type;
+    private String address = new String();
+    private int port;
     
-    public Protocol(int id, int port)       // Pode não ser necessário.
+   /**
+    * Constructor of a protocol object
+    * @param type: protocol type:
+    * 0 - UDP
+    * 1 - Modbus
+    */
+    public Protocol(int protocolType)       
     {
-        id = 1;
-        port = 54321;
+        // UDP
+        if(protocolType == 0)
+            type = 0;
+        
+        // Modbus
+        else
+            type = 1;
     }
     
-    public static void UDPServer() throws Exception
+    /**
+     * 
+     * @param protocolAddress
+     * @param protocolPort 
+     */
+    public void initProtocol(String protocolAddress, int protocolPort) 
+    {
+        // UDP
+        if (type == 0)
+        {
+            port = protocolPort;
+            address = protocolAddress;
+        }
+        
+        // Modbus
+        else
+        {
+            port = protocolPort;
+            address = protocolAddress;
+        }
+            
+            
+    }
+    
+    /**
+     * 
+     * @param protocolType 
+     */
+    public void startProtocol()
+    {
+        if(type == 0)
+        {
+            try
+            {
+                udpServer();
+            }
+            catch(Exception ex)
+            {
+                //TO DO
+            }
+        }
+        else
+            modbusMasterTCP();
+    }
+    
+    public static void udpServer() throws Exception
       {
         // creates new datagram socket (Port: 54321)  
         DatagramSocket serverSocket = new DatagramSocket(54321);
@@ -46,7 +103,7 @@ public class Protocol
    
  
 
-    public static void modbusMasterTCP(String[] args) 
+    public static void modbusMasterTCP() 
     {
     try 
         {
@@ -72,7 +129,7 @@ public class Protocol
             System.exit(1);
             } 
         else 
-            {
+            {// Pode não ser necessário.
             try 
                 {
                 String astr = args[0];
@@ -131,5 +188,7 @@ public class Protocol
     
     }
    
+    
+    
     
 }

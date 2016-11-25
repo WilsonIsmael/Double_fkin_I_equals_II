@@ -11,4 +11,41 @@ package mes;
  */
 public class Database {
     
+    private boolean isReady = false;
+    
+    /**
+     * 
+     * @return 
+     */
+    public boolean isReady()
+    {
+        return isReady;
+    }
+    
+    /**
+     * 
+     */
+    public void initDatabase()
+    {
+        
+        if (testDatabase())
+            isReady = true;
+        else 
+        {
+            isReady = false;
+            System.out.println("Database communication error. (initDatabase)");
+        }
+    }
+    
+    private boolean testDatabase()
+    {
+        
+        // if response to SQL Query is received
+        if(true)
+            return true;
+      
+        else 
+            return false;
+    }
+    
 }

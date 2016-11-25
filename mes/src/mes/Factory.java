@@ -11,4 +11,18 @@ package mes;
  */
 public class Factory {
     
+    private boolean isReady = false;
+    
+  
+    public boolean isReady()
+    {
+        return isReady;
+    }
+
+    public void initFactory()
+    {
+        // updates the status
+        isReady = true;
+    } 
 }
+

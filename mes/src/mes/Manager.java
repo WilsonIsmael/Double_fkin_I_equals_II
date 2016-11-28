@@ -6,31 +6,61 @@
 
 package mes;
 
-import java.util.Scanner;
-
-
+import java.util.*;
 
 public class Manager
 {
-  
+    
+    public Manager(String managerType)
+    {
+         if (managerType == "Communication")
+             type = 0;
+         else if (managerType == "Data")
+             type = 1;
+         else 
+             type = 2;
+    }
+    
+    private PriorityQueue<String> taskQueue;
+    private int type;
+    
+    /**
+     * 
+     * @param args 
+     * args[0] - UDP port
+     * args[1] - UDP address
+     * args[2] - Modbus port
+     * args[3] - Modbus address
+     *
+     */
     public static void main (String[] args)
     {
+        Manager communicationManager, dataManager, taskManager;
+        
+        // creates manager objects
+        communicationManager = new Manager("Communication");
+        dataManager = new Manager("Data");
+        taskManager = new Manager("Task");
+        
         // creates protocol objects (UDP and Modbus)
         Protocol udpServer, modbusMaster;
-        udpServer = new Protocol(0);
-        modbusMaster = new Protocol(1);
+        udpServer = new Protocol("UDP");
+        modbusMaster = new Protocol("Modbus");
         
         // assigns addresses to protocols
-        String udpAddress = "";
-        String modbusAddress = "";
+        String udpAddress = args[1];
+        String modbusAddress = args[3];
         
         // assigns port values to protocols
-        int udpPort = 54321;
-        int modbusPort = 0;
+        int udpPort = Integer.parseInt(args[0]);
+        int modbusPort = Integer.parseInt(args[2]);
         
         // initializes protocol parameters
         udpServer.initProtocol(udpAddress, udpPort);
         modbusMaster.initProtocol(modbusAddress, modbusPort);
+        
+        // creates priorityQueue
+        communicationManager.createQueue();
         
         // creates a factory object
         Factory simulatedFactory = new Factory();
@@ -46,7 +76,7 @@ public class Manager
         simulatedFactory.initFactory();
         
         // checks if factory is ready
-        if((simulatedFactory.isReady));
+        if((simulatedFactory.isReady()));
         
         // initializes database
         db.initDatabase();
@@ -55,6 +85,14 @@ public class Manager
         if(db.isReady());
         
         
+    }
+    
+    /**
+     * 
+     */
+    public void createQueue()
+    {
+        taskQueue = new PriorityQueue(); 
     }
     
  }

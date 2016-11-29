@@ -28,8 +28,10 @@ public class Protocol
     {
         // UDP
         if(protocolType == 0)
+        {
             type = 0;
-        
+        }
+        //system.out
         // Modbus
         else
             type = 1;
@@ -69,7 +71,7 @@ public class Protocol
         {
             try
             {
-                udpServer();
+            udpServer();
             }
             catch(Exception ex)
             {
@@ -77,38 +79,47 @@ public class Protocol
             }
         }
         else
-            modbusMasterTCP();
+        {
+            //modbusMasterTCP();
+        }
     }
     
     public static void udpServer() throws Exception
       {
         // creates new datagram socket (Port: 54321)  
-        DatagramSocket serverSocket = new DatagramSocket(54321);
+          DatagramSocket serverSocket = new DatagramSocket(54321);
         
         // creates array of bytes (receiveData and sendData)
-        byte[] receiveData = new byte[1024];
-       
-        while(true)
-        {
+          byte[] receiveData = new byte[1024];
+          byte[] sendData = new byte[1024];
+          while(true)
+           {
             // creates new packet to receive data
-            DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+               DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
             // receives a packet from port 54321
-            serverSocket.receive(receivePacket);
+                  serverSocket.receive(receivePacket);
             // retrieves the sentence from the packet
-            String sentence = new String( receivePacket.getData());
+                  String sentence = new String( receivePacket.getData());
             // prints the sentence
-            System.out.println("RECEIVED: " + sentence);
-        }
+                  System.out.println("RECEIVED: " + sentence);
+                  InetAddress IPAddress = receivePacket.getAddress();
+                  int port = receivePacket.getPort();
+                  String capitalizedSentence = sentence.toUpperCase();
+                  sendData = capitalizedSentence.getBytes();
+                  DatagramPacket sendPacket =
+                  new DatagramPacket(sendData, sendData.length, IPAddress, port);
+                  serverSocket.send(sendPacket);
+               }
       }
-   
- 
 
-    public static void modbusMasterTCP() 
+
+
+    /*public static void modbusMasterTCP() 
     {
     try 
         {
         /* The important instances of the classes mentioned before */
-        TCPMasterConnection con = null; //the connection
+        /*TCPMasterConnection con = null; //the connection
         
         ModbusTCPTransaction trans = null; //the transaction
         
@@ -117,7 +128,7 @@ public class Protocol
         ReadInputDiscretesResponse res = null; //the response
 
         /* Variables for storing the parameters */
-        InetAddress addr = null;            //the slave's address
+        /*InetAddress addr = null;            //the slave's address
         int port = Modbus.DEFAULT_PORT;
         int ref = 0;                        //the reference; offset where to start reading from
         int count = 0;                      //the number of DI's to read
@@ -186,7 +197,7 @@ public class Protocol
             System.exit(1);
             }
     
-    }
+    }*/
    
     
     

@@ -6,6 +6,7 @@
 
 package mes;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 
@@ -13,7 +14,7 @@ import java.util.Scanner;
 public class Manager
 {
   
-    public static void main (String[] args)
+    public static void main (String[] args) throws SQLException
     {
         // creates protocol objects (UDP and Modbus)
         Protocol udpServer, modbusMaster;
@@ -25,7 +26,7 @@ public class Manager
         String modbusAddress = "";
         
         // assigns port values to protocols
-        int udpPort = 54321;
+        int udpPort = 0;
         int modbusPort = 0;
         
         // initializes protocol parameters
@@ -38,6 +39,18 @@ public class Manager
         // creates a database object
         Database db = new Database();
         
+        if(db.initDatabase("org.postgresql.Driver", 
+                "jdbc:postgresql://dbm.fe.up.pt/sinf16g67"))
+        {
+            if(db.setCredentials("sinf16g67","manueljoaofraga"))
+            {
+                if(db.openConnection())
+                {
+                    db.executeQuery("CREATE TABLE mes.TEST();");
+                }
+            }
+        }
+        
         // run protocols
         udpServer.startProtocol();
         modbusMaster.startProtocol();
@@ -46,15 +59,8 @@ public class Manager
         simulatedFactory.initFactory();
         
         // checks if factory is ready
-        if((simulatedFactory.isReady));
-        
-        // initializes database
-        db.initDatabase();
-        
-        // checks if database is ready
-        if(db.isReady());
-        
-        
+        //if((simulatedFactory.isReady));
+       
     }
     
  }

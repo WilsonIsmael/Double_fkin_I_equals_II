@@ -11,7 +11,28 @@ package mes;
  */
 public class Database {
     
+    private String user;
+    private String password;
     private boolean isReady = false;
+    
+    /**
+     * 
+     * @return 
+     */
+    public String getUser()
+    {
+        return user;
+    }
+    
+     /**
+     * 
+     * @return 
+     */
+    public String getPassword()
+    {
+        return password;
+    }
+    
     
     /**
      * 

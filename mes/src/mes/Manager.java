@@ -11,19 +11,31 @@ import java.util.*;
 public class Manager
 {
     
+        
+    private PriorityQueue<String> taskQueue;
+    private int type;
+    
+    
+    /**
+     * Construct
+     * 
+     * @param managerType 
+     * "Communication" - creates a communication manager
+     * "Data" - creates a data manager
+     * "Task" - creates a task manager
+     */
     public Manager(String managerType)
     {
          if (managerType == "Communication")
              type = 0;
          else if (managerType == "Data")
              type = 1;
-         else 
+         else if (managerType == "Task")
              type = 2;
+         else
+             System.out.println("Manager type is not recognized");
     }
-    
-    private PriorityQueue<String> taskQueue;
-    private int type;
-    
+
     /**
      * 
      * @param args 
@@ -58,6 +70,10 @@ public class Manager
         // initializes protocol parameters
         udpServer.initProtocol(udpAddress, udpPort);
         modbusMaster.initProtocol(modbusAddress, modbusPort);
+        
+        //starts protocol
+        udpServer.startProtocol();
+        modbusMaster.startProtocol();
         
         // creates priorityQueue
         communicationManager.createQueue();

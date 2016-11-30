@@ -33,6 +33,42 @@ public class Database {
         return isReady;
     }
     
+    /**
+     * 
+     * @return 
+     */
+    public String getDatabasePassword()
+    {
+        return databasePassword;
+    }
+    
+    /**
+     * 
+     * @return 
+     */
+    public String getDatabaseUsername()
+    {
+        return databaseUser;
+    }
+    
+    /**
+     * 
+     * @return 
+     */
+    public String getDatabaseURL()
+    {
+        return databaseURL;
+    }
+    
+    /**
+     * 
+     * @return 
+     */
+    public String getDatabaseDriver()
+    {
+        return jdbcDriver;
+    }
+    
   /**
    * Initializes database with given parameters
    * @param driver
@@ -87,7 +123,6 @@ public class Database {
         }     
     }
     
-    
     /**
      * Opens a database connection
      * @return 
@@ -125,6 +160,16 @@ public class Database {
       }
     }
     
+    /**
+     * 
+     * @return 
+     */
+    public boolean closeConnection()
+    {
+      //TO DO
+      return true;
+    }
+    
     
     /**
      * Tests a ready database connection
@@ -146,46 +191,6 @@ public class Database {
         }
         
         return true;
-    }
-    
-    
-    /**
-     * 
-     * @return 
-     */
-    public String getDatabasePassword()
-    {
-        return databasePassword;
-    }
-    
-    
-    /**
-     * 
-     * @return 
-     */
-    public String getDatabaseUsername()
-    {
-        return databaseUser;
-    }
-    
-    
-    /**
-     * 
-     * @return 
-     */
-    public String getDatabaseURL()
-    {
-        return databaseURL;
-    }
-    
-    
-    /**
-     * 
-     * @return 
-     */
-    public String getDatabaseDriver()
-    {
-        return jdbcDriver;
     }
     
     

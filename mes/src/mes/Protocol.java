@@ -11,7 +11,6 @@ import net.wimpi.modbus.net.*;
 import net.wimpi.modbus.util.*;
 
 
-
 public class Protocol
 {
     private int type;
@@ -47,8 +46,12 @@ public class Protocol
         // UDP
         if (type == 0)
         {
-            port = protocolPort;
-            address = protocolAddress;
+            while(true)
+            {
+                System.out.println("Entrei no while!/n");
+                port = protocolPort;
+                address = protocolAddress;
+            }
         }
         
         // Modbus

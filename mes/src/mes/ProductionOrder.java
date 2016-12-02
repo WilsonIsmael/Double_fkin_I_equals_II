@@ -5,10 +5,54 @@
  */
 package mes;
 
+import java.util.*;
+   
+    
 /**
  *
  * @author Utilizador
  */
-public class ProductionOrder {
+public class ProductionOrder 
+{
+     private String orderID;
+     private Date orderDate;
+     private String orderStatus;
+     
+     /**
+      * 
+      * @return 
+      */
+     public String getOrderID()
+     {
+         return orderID;
+     }
+     
+     /**
+      * 
+      * @return 
+      */
+     public Date getOrderDate()
+     {
+         return orderDate;
+     }
+     
+     /**
+      * 
+      * @return 
+      */
+     public String getOrderStatus()
+     {
+         return orderStatus;
+     }
+     
+     /**
+      * 
+      * @return 
+      */
+     public boolean setOrderStatus()
+     {
+         return true;
+     }
+     
     
 }

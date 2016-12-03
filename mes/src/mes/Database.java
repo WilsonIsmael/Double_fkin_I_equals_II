@@ -14,27 +14,25 @@ import java.sql.*;
 public class Database {
     
     private static String jdbcDriver;  
-    private static String databaseURL;
-    private static String databaseUser;
-    private static String databasePassword;
-    private boolean isReady = false;
+    private static String URL;
+    private static String username;
+    private static String password;
+    private boolean status;
     private Connection databaseConnection;
     private Statement databaseStatement;
     private ResultSet dataSet;
     
     /**
-     * Checks if database is ready
+     * Gets the username
      * @return 
-     * true - database is ready
-     * false - database not ready
      */
-    public String getUser()
+    public String getUsername()
     {
-        return user;
+        return username;
     }
     
      /**
-     * 
+     * Gets the password
      * @return 
      */
     public String getPassword()
@@ -44,46 +42,28 @@ public class Database {
     
     
     /**
-     * 
+     * Gets database status
      * @return 
      */
     public boolean isReady()
     {
-        return isReady;
+        return status;
     }
     
     /**
-     * 
+     * Gets database URL
      * @return 
      */
-    public String getDatabasePassword()
+    public String getURL()
     {
-        return databasePassword;
+        return URL;
     }
     
     /**
-     * 
+     * Gets database driver
      * @return 
      */
-    public String getDatabaseUsername()
-    {
-        return databaseUser;
-    }
-    
-    /**
-     * 
-     * @return 
-     */
-    public String getDatabaseURL()
-    {
-        return databaseURL;
-    }
-    
-    /**
-     * 
-     * @return 
-     */
-    public String getDatabaseDriver()
+    public String getDriver()
     {
         return jdbcDriver;
     }
@@ -96,22 +76,25 @@ public class Database {
    * true - database initialized with success
    * false - database not initialized
    */
-    public boolean initDatabase(String driver, String url)
+    public boolean initDatabase(String databaseDriver, String databaseURL)
     {
-        if ("".equals(driver))
+        // if driver is empty
+        if ("".equals(databaseDriver))
         {
             System.out.println("No driver.");
             return false;
         }
-        else if ("".equals(url))
+        // if the url is empty
+        else if ("".equals(databaseURL))
         {
             System.out.println("No url.");
             return false;
         }
+        // if all parameters were given
         else
         {
-            jdbcDriver = driver;  
-            databaseURL = url;
+            jdbcDriver = databaseDriver;  
+            URL = databaseURL;
             return true;
         }     
     }
@@ -121,23 +104,28 @@ public class Database {
      * @param username
      * @param password
      * @return 
+     * true 
+     * false
      */
-    public boolean setCredentials(String username, String password)
+    public boolean setCredentials(String databaseUsername, String databasePassword)
     {
-         if ("".equals(username))
+        // if the username is empty
+        if ("".equals(databaseUsername))
         {
             System.out.println("No username.");
             return false;
         }
-        else if ("".equals(password))
+        // if the username is empty
+        else if ("".equals(databasePassword))
         {
             System.out.println("No password.");
             return false;
         }
+        // if all credentials were given
         else
         {
-            databaseUser = username;
-            databasePassword = password;
+            username = databaseUsername;
+            password = databasePassword;
             return true;
         }     
     }
@@ -145,6 +133,8 @@ public class Database {
     /**
      * Opens a database connection
      * @return 
+     * true
+     * false
      */
     public boolean openConnection()
     {
@@ -154,34 +144,38 @@ public class Database {
      
       try
       {
-        databaseConnection = DriverManager.getConnection(getDatabaseURL(),
-              getDatabaseUsername(), getDatabasePassword());
+        databaseConnection = DriverManager.getConnection(getURL(),
+              getUsername(), getPassword());
       } catch (SQLException e) 
         {
-
+            // if there was some exception
             System.out.println("Connection Failed! Check output console");
             e.printStackTrace();
             return false;
         }
       
+      // if a database connection was created
       if (databaseConnection != null) 
       {
           System.out.println("You made it, take control your database now!");
-          isReady = true;
+          status = true;
           return true;
       } 
       
+      // if a database connection was not created
       else 
       {
           System.out.println("Failed to make connection!");
-          isReady = false;
+          status = false;
           return false;
       }
     }
     
     /**
-     * 
-     * @return 
+     * Closes the connection
+     * @return
+     * true
+     * false
      */
     public boolean closeConnection()
     {
@@ -189,30 +183,31 @@ public class Database {
       return true;
     }
     
-    
     /**
-     * Tests a ready database connection
+     * Tests a ready database connection with a test query
      * @return 
+     * true
+     * false
      */
     private boolean testDatabase()
     {  
-        //only tests if database is ready
-        if (isReady)
+        // if database is ready, tests
+        if (status)
         {
-            // if response to SQL Query is received
+            // if response to test query is received
             if(true)
                 return true;
         }
+        // if database is not ready
         else
         {
-            System.out.println("Only tests when ready.");
+            System.out.println("Only test when ready.");
             return false;
         }
         
-        return true;
+        return false;
     }
-    
-    
+   
     /**
      * 
      */
@@ -224,7 +219,7 @@ public class Database {
         try 
         {
 
-            Class.forName(getDatabaseDriver());
+            Class.forName(getDriver());
 
         } catch (ClassNotFoundException e) {
 

@@ -10,6 +10,9 @@ import javax.swing.JOptionPane;
 import net.wimpi.modbus.io.ModbusTCPTransaction;
 import net.wimpi.modbus.msg.*;
 import net.wimpi.modbus.net.TCPMasterConnection;
+import java.util.*;
+import net.wimpi.modbus.util.BitVector;
+
 
 /**
  *This class extends Protocol
@@ -41,6 +44,11 @@ public final class Modbus {
     private int noOfBits = 0;
     // a loop for repeating the transaction
     private int noOfTransactions = 1;       
+    // offset where to start writing
+    private int startWritingReference = 0;
+    // Bit Vector to Write in PLC
+    private BitVector bitsToWrite;
+    
     
     public Modbus() {
         initModbus();
@@ -65,6 +73,31 @@ public final class Modbus {
         noOfBits = bitCount;
         return true;
     }
+    
+    /**
+     * 
+     * @return 
+     */
+    public BitVector getBitsToWrite()
+    {
+        return bitsToWrite;
+        
+    }
+    
+    
+    /**
+     * 
+     * @param vectorOfBits
+     * @return 
+     */
+    public boolean setBitsToWrite(BitVector vectorOfBits)
+    {
+        bitsToWrite = vectorOfBits;
+        return true;
+    }
+    
+    
+
     
     /**
      * 
@@ -136,6 +169,7 @@ public final class Modbus {
     }
     
     
+    
     /**
      * Sets start reading point in PLC
      * @param offset
@@ -146,6 +180,30 @@ public final class Modbus {
         startReadingReference = offset;
         return true;
     }
+    
+    
+    
+    
+    /**
+     * Gets the offset where to start writing in PLC
+     * @return 
+     */
+    public int getStartWritingReference()
+    {
+     return startWritingReference;   
+    }
+    
+    /**
+     * Sets start writing point in PLC
+     * @param offset
+     * @return 
+     */
+    public boolean setStartWritingReference(int offset)
+    {
+        startWritingReference = offset;
+        return true;
+    }
+    
     
     /**
      * 
@@ -185,19 +243,34 @@ public final class Modbus {
     
     /**
      * 
+     * @param type
      * @return 
      */
-    public boolean setModbusTransaction()
+    public boolean setModbusTransaction(int type)
     {
         modbusTransaction = new ModbusTCPTransaction(modbusConnection);
-        modbusTransaction.setRequest(modbusReadRequest);
+        
+        // if type is 1 we set up a Transaction to Read Discrete Inputs
+        if (type == 1)
+        {
+            modbusTransaction.setRequest(modbusReadRequest);
+        }
+        
+        // if type is 2 we set up a Transaction to Write Multiple Coils
+        else if (type == 2)
+        {
+            modbusTransaction.setRequest(modbusWriteRequest);
+        }
+        
+        else
+            return false;
+
         // error occured while setting modbusTransaction
         if (modbusTransaction == null)
             return false;
         // no errors
         else 
             return true;
-                    
     }
     
     /**
@@ -233,6 +306,36 @@ public final class Modbus {
     {
         return modbusReadRequest;
     }     
+    
+    
+    /**
+     * sets the Write Multiple Coils Request
+     * @return 
+     */
+    public boolean setModbusWriteRequest()
+    {
+        modbusWriteRequest = new WriteMultipleCoilsRequest(startWritingReference, bitsToWrite);
+        
+        
+        // testing if some error occurred while creating the Write Multiple Coils Request
+        if (modbusWriteRequest == null)
+            return false;
+        else
+            return true;
+        
+    }
+    
+    /**
+     * returns the write multiple coils request
+     * @return 
+     */
+    public WriteMultipleCoilsRequest getModbusWriteRequest()
+    {
+        return modbusWriteRequest;
+    }     
+    
+    
+    
     
     /**
      * Initializes the protocol
@@ -277,10 +380,12 @@ public final class Modbus {
             return false;
     }
     
-    /**
-     * 
-     * @return 
-     */
+/**
+ * 
+ * @param offset
+ * @param bitCount
+ * @return 
+ */
     public String readModbus(int offset, int bitCount)
     {
         if(setStartReadingReference(offset))
@@ -296,7 +401,7 @@ public final class Modbus {
         if(setModbusReadRequest())
         {
             // if read transaction was read successfully
-            if(setModbusTransaction())
+            if(setModbusTransaction(1))
             {
                 try
                 {
@@ -320,4 +425,50 @@ public final class Modbus {
         else
             return null;
     }   
+    
+    
+    public String writeModbus(int offset, BitVector vectorOfBits)
+    {
+        if(setStartWritingReference(offset))
+        {
+            //TO DO
+        }
+        
+        if (setBitsToWrite(vectorOfBits))
+        {
+            //TO DO
+        }
+        
+        
+        if (setModbusWriteRequest())
+        {
+            if (setModbusTransaction(2))
+            {
+                try
+                {
+                    // executes a reading
+                    modbusTransaction.execute();
+                }          
+                catch(Exception ex)
+                {
+                    ex.printStackTrace();
+                    System.exit(1);
+                }
+                
+                modbusWriteResponse = (WriteMultipleCoilsResponse) modbusTransaction.getResponse();
+                
+                // Returns the response in String format
+                return modbusWriteResponse.toString();
+            }
+            // if some error occured setting transaction;
+            else
+                return null;
+                       
+        }
+        // if some error occured setting the request;
+        else
+            return null;
+
+    }
+
 }

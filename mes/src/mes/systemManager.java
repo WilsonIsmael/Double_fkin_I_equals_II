@@ -8,6 +8,7 @@ package mes;
 import java.sql.SQLException;
 import java.util.*;
 import javax.swing.JOptionPane;
+import net.wimpi.modbus.util.BitVector;
 
 /**
  * Classe para gerir o arranque e funcionamento do sistema
@@ -45,8 +46,30 @@ public class systemManager
         else
             System.out.println("Modbus connection failed.\n");
 
+        
         protocolToPLC.openConnection();
-        protocolToPLC.readModbus(0, 0);
+        
+        
+        // creating a bit vector of size 8
+        BitVector b = new BitVector(8);
+        
+        // setting all bits to 1
+        int i=0;
+        do
+        {
+            b.setBit(i,true);
+            i++;
+        }while(i<8);
+        
+        // prints the bit vector
+        System.out.println(b.toString());
+        
+        // prints the result of the function writeModbus (Write Multiple Coils) 
+        System.out.println(protocolToPLC.writeModbus(0,b));
+        
+        
+
+        
         
        // creates a database object
        Database db = new Database();
@@ -62,7 +85,7 @@ public class systemManager
                if(db.openConnection())
                {
                    // executes a query
-                   db.executeQuery("CREATE TABLE mes.TEST_TWO();");
+                   db.executeQuery("CREATE TABLE mes.TEST_THREE();");
               }
           }
        }
@@ -76,6 +99,16 @@ public class systemManager
         // checks if factory is ready
         //if((simulatedFactory.isReady));
   
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
  }
    
 }

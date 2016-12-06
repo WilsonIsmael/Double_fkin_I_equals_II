@@ -10,7 +10,6 @@ import javax.swing.JOptionPane;
 import net.wimpi.modbus.io.ModbusTCPTransaction;
 import net.wimpi.modbus.msg.*;
 import net.wimpi.modbus.net.TCPMasterConnection;
-import java.util.*;
 import net.wimpi.modbus.util.BitVector;
 
 
@@ -51,11 +50,12 @@ public final class Modbus {
     
     
     public Modbus() {
+        // initializes modbus protocol
         initModbus();
     }
     
     /**
-     * 
+     * Gets number of bits to read/write
      * @return 
      */
     public int getNoOfBits()
@@ -64,18 +64,19 @@ public final class Modbus {
     }
     
     /**
-     * 
+     * //Sets number of bits to read/write
      * @param bitCount
      * @return 
      */
     public boolean setNoOfBits(int bitCount)
     {
         noOfBits = bitCount;
-        return true;
+        // returns true if bitCount is not zero
+        return bitCount != 0;
     }
     
     /**
-     * 
+     * Gets bits to write
      * @return 
      */
     public BitVector getBitsToWrite()
@@ -86,26 +87,45 @@ public final class Modbus {
     
     
     /**
-     * 
+     * Sets bits to write
      * @param vectorOfBits
      * @return 
      */
     public boolean setBitsToWrite(BitVector vectorOfBits)
     {
         bitsToWrite = vectorOfBits;
-        return true;
+        // returns true if bitsToWrite is not null
+        return bitsToWrite != null;
     }
     
-    
-
-    
+   
     /**
-     * 
+     * Gets modbus address
      * @return 
      */
     public String getModbusAddress()
     {
         return address;
+    }
+    
+     /**
+     * Sets the protocol address
+     * @return 
+     *true if address is not empty
+     *false if address is empty
+     */
+    public boolean setModbusAddress()
+    {
+       
+        // user prompt
+        address = JOptionPane.showInputDialog("Insert address");
+        
+        // if given address is empty
+        if ("".equals(address))
+            return false;
+        // if the address is not empty
+        else 
+            return true;
     }
     
     /**
@@ -115,26 +135,6 @@ public final class Modbus {
     public int getModbusPort()
     {
         return port;
-    }
-    
-    /**
-     * Sets the protocol address
-     * @return 
-     *true if address is not empty
-     *false if address is empty
-     */
-    public boolean setModbusAddress()
-    {
-       
-         // user prompt
-        String address = JOptionPane.showInputDialog("Insert address");
-        
-        // if given address is empty
-        if ("".equals(address))
-            return false;
-        // if the address is not empty
-        else 
-            return true;
     }
     
     /**
@@ -151,12 +151,8 @@ public final class Modbus {
       
         port = Integer.parseInt(inputPort);
         
-        // if port is empty
-        if (port == 0)
-            return false;
-        // if port is not empty
-        else 
-            return true;
+        // returns true if port is not empty
+        return port != 0; 
     }
     
     /**
@@ -168,8 +164,6 @@ public final class Modbus {
         return startReadingReference;
     }
     
-    
-    
     /**
      * Sets start reading point in PLC
      * @param offset
@@ -180,10 +174,7 @@ public final class Modbus {
         startReadingReference = offset;
         return true;
     }
-    
-    
-    
-    
+   
     /**
      * Gets the offset where to start writing in PLC
      * @return 
@@ -206,20 +197,19 @@ public final class Modbus {
     
     
     /**
-     * 
-     * @param modbusAddress
+     * Sets a modbus connection
      * @return 
      */
     public boolean setModbusConnection()
     {
         try
         {
-        // sets connection address
-        modbusConnection = new TCPMasterConnection(
-                InetAddress.getByName(address));
-        
-        // sets connection port
-        modbusConnection.setPort(port);
+            // sets connection address
+            modbusConnection = new TCPMasterConnection(
+                    InetAddress.getByName(address));
+
+            // sets connection port
+            modbusConnection.setPort(port);
         }
         catch (Exception ex) 
         {
@@ -227,12 +217,12 @@ public final class Modbus {
             System.exit(1);
             return false;
         }
-        
+        // if a modbus connection was created
         return true;
     }
     
     /**
-     * 
+     * Gets a modbus connection
      * @return 
      */
     public TCPMasterConnection getModbusConnection()
@@ -240,41 +230,58 @@ public final class Modbus {
         return modbusConnection;
     } 
   
-    
     /**
-     * 
-     * @param type
+     * Sets a modbus transaction
+     * @param transactionType
      * @return 
      */
-    public boolean setModbusTransaction(int type)
+    public boolean setModbusTransaction(String transactionType)
     {
+        // creates a new transaction
         modbusTransaction = new ModbusTCPTransaction(modbusConnection);
-        
-        // if type is 1 we set up a Transaction to Read Discrete Inputs
-        if (type == 1)
-        {
-            modbusTransaction.setRequest(modbusReadRequest);
-        }
-        
-        // if type is 2 we set up a Transaction to Write Multiple Coils
-        else if (type == 2)
-        {
-            modbusTransaction.setRequest(modbusWriteRequest);
-        }
-        
-        else
-            return false;
-
-        // error occured while setting modbusTransaction
+      
+        // if error occured while creating modbusTransaction
         if (modbusTransaction == null)
-            return false;
-        // no errors
+        {
+            System.out.println("Error creating new transaction.\n");
+                return false;
+        }
+        
+        // no errors creating new transaction
         else 
+        {
+            // if no type of transaction was given
+            if (null == transactionType)
+            {
+                System.out.println("No transaction type was given\n");
+                return false;
+            }
+            // if a transaction type was given
+            else
+                switch(transactionType)
+                {
+                    // if type is 1 we set up a Transaction to Read Discrete Inputs
+                    case "read":                
+                        modbusTransaction.setRequest(modbusReadRequest);
+                        break;
+
+                    // if type is 2 we set up a Transaction to Write Multiple Coils
+                    case "write":
+                     modbusTransaction.setRequest(modbusWriteRequest);
+
+                    default: 
+                    {
+                        System.out.println("Transaction type not recognized.\n");
+                        return false;
+                    }
+               }
+            // if transaction was created
             return true;
+        }  
     }
     
     /**
-     * 
+     * Gets a modbus transaction
      * @return 
      */
     public ModbusTCPTransaction getModbusTransaction()
@@ -283,7 +290,7 @@ public final class Modbus {
     } 
    
     /**
-     * 
+     * Sets a modbus transaction
      * @return 
      */
     public boolean setModbusReadRequest()
@@ -291,38 +298,33 @@ public final class Modbus {
         modbusReadRequest = new ReadInputDiscretesRequest(
                 startReadingReference, noOfBits);
         
-        // if some error occured while creating modbusRequest
-        if (modbusReadRequest == null)
-            return false;
-        else 
-            return true;
+        // returns true if read request is not null
+        return modbusReadRequest != null;
     }
     
     /**
-     * 
+     * Gets a modbus read request
      * @return 
+     * true
+     * false
      */
     public ReadInputDiscretesRequest getModbusReadRequest()
     {
         return modbusReadRequest;
     }     
     
-    
     /**
-     * sets the Write Multiple Coils Request
+     * Sets a write request
      * @return 
+     * true
+     * false
      */
     public boolean setModbusWriteRequest()
     {
         modbusWriteRequest = new WriteMultipleCoilsRequest(startWritingReference, bitsToWrite);
         
-        
-        // testing if some error occurred while creating the Write Multiple Coils Request
-        if (modbusWriteRequest == null)
-            return false;
-        else
-            return true;
-        
+        // returns true if the write request is not null
+        return modbusWriteRequest != null;  
     }
     
     /**
@@ -334,12 +336,11 @@ public final class Modbus {
         return modbusWriteRequest;
     }     
     
-    
-    
-    
     /**
      * Initializes the protocol
      * @return 
+     * true
+     * false
      */
     public boolean initModbus() 
     {
@@ -360,28 +361,26 @@ public final class Modbus {
     }   
     
     /**
-     * 
+     * Opens a new connection
      * @return 
      */
     public boolean openConnection()
     {
         try
         {
-        modbusConnection.connect();
+            modbusConnection.connect();
         }
         catch (Exception ex) 
         {   
-         ex.printStackTrace();
-         System.exit(1);
+            ex.printStackTrace();
+            System.exit(1);
         }
-        if(modbusConnection.isConnected())
-            return true;
-        else
-            return false;
+        // returns true if connection is on
+        return modbusConnection.isConnected();
     }
     
 /**
- * 
+ * Reads from PLC
  * @param offset
  * @param bitCount
  * @return 
@@ -401,7 +400,7 @@ public final class Modbus {
         if(setModbusReadRequest())
         {
             // if read transaction was read successfully
-            if(setModbusTransaction(1))
+            if(setModbusTransaction("read"))
             {
                 try
                 {
@@ -413,6 +412,7 @@ public final class Modbus {
                     ex.printStackTrace();
                     System.exit(1);
                 }
+               
                 // receives a reading
                 modbusReadResponse = (ReadInputDiscretesResponse) modbusTransaction.getResponse();
                 return modbusReadResponse.getDiscretes().toString();
@@ -426,7 +426,12 @@ public final class Modbus {
             return null;
     }   
     
-    
+    /**
+     * Writes to PLC
+     * @param offset
+     * @param vectorOfBits
+     * @return 
+     */
     public String writeModbus(int offset, BitVector vectorOfBits)
     {
         if(setStartWritingReference(offset))
@@ -439,10 +444,11 @@ public final class Modbus {
             //TO DO
         }
         
-        
+        // if a write request was created
         if (setModbusWriteRequest())
         {
-            if (setModbusTransaction(2))
+            // if a write transaction was created
+            if (setModbusTransaction("write"))
             {
                 try
                 {
@@ -462,13 +468,10 @@ public final class Modbus {
             }
             // if some error occured setting transaction;
             else
-                return null;
-                       
+                return null;            
         }
         // if some error occured setting the request;
         else
             return null;
-
     }
-
 }

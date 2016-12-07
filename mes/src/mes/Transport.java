@@ -7,16 +7,18 @@ package mes;
 
 /**
  *
- * @author Utilizador
+ * @author Mário Xavier
  */
 public class Transport {
     
-    int ID;
-    String type;
+    private int ID;
+    private String type;
+    private String status;
     
     /**
-     * Constructor
+     * Constructor that creates his own conveyors
      * @param transportType 
+     * @param currentFactory
      */
     public Transport(String transportType, Factory currentFactory)
     {
@@ -28,13 +30,13 @@ public class Transport {
             case "input":
                 type = transportType;
                 // creates transport conveyors in the curren factory
-                currentFactory.addConveyors("transport", 30, currentFactory);
+                currentFactory.addConveyors("linear","transport", 30);
                 break;
 
             case "output":
                 type = transportType;
                 //creates transport conveyors in the current factory
-                currentFactory.addConveyors("transport", 30, currentFactory);
+                currentFactory.addConveyors("linear","transport", 30);
                 break;
             
             default:

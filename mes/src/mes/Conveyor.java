@@ -12,31 +12,55 @@ package mes;
 public class Conveyor {
     
     public int ID;
-    public String type;
+    private String type;
+    private String group;
     private String status;
     
     
+      
     /**
      * Constructor
+     * @param conveyorGroup
+     * @param conveyorType
      */
-    public Conveyor(String conveyorType)
+    public Conveyor(String conveyorGroup, String conveyorType)
     {
       if (null == conveyorType)
           System.out.println("No conveyor type given.\n");
       else
-          switch(conveyorType)
+      {
+          // sets the conveyor group
+          switch(conveyorGroup)
           {
               case "cell":
-                  type = conveyorType;
+                  group = conveyorGroup;
                   break;
                   
               case "transport":
-                  type = conveyorType;
+                  group = conveyorGroup;
                   break;
                   
               default:
-                System.out.println("Cell type not recognized.\n");
-          } 
+                System.out.println("Conveyor group not recognized.\n");
+          }
+          
+          // sets the conveyor type
+          switch(conveyorType)
+          {
+              case "rotating":
+                  type = conveyorType;
+                  break;
+                  
+              case "linear":
+                  type = conveyorType;
+                  break;
+              case "slide":
+                  type = conveyorType;
+                  break;
+              default:
+                System.out.println("Conveyor type not recognized.\n");
+          }
+      }
     }
     
     /**
@@ -70,6 +94,7 @@ public class Conveyor {
     }
     
     /**
+     * 
      * Sets a conveyor type
      * @param conveyorType
      * @return 

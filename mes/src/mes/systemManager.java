@@ -22,7 +22,7 @@ public class systemManager
     
      public static void main (String[] args) throws SQLException
      {     
-        
+        Monitor factoryMonitor;
         Modbus protocolToPLC;
         UDP protocolToERP;
         // creates UDP protocol object
@@ -35,6 +35,8 @@ public class systemManager
         
         // creates Modbus protocol object
         protocolToPLC = new Modbus();
+        factoryMonitor = new Monitor(protocolToPLC); 
+        
         // error creating protocol to PLC
         if (protocolToPLC == null)
         {
@@ -49,9 +51,18 @@ public class systemManager
         
         protocolToPLC.openConnection();
         
+        // Tests the monitor readSensors() method
+        System.out.println(factoryMonitor.readSensors());
+        
+
+
+        
+        /* Tests the writeModbus Function
+        
         
         // creating a bit vector of size 8
         BitVector b = new BitVector(8);
+        
         
         // setting all bits to 1
         int i=0;
@@ -59,7 +70,7 @@ public class systemManager
         {
             b.setBit(i,true);
             i++;
-        }while(i<8);
+        }while(i<1);
         
         // prints the bit vector
         System.out.println(b.toString());
@@ -67,8 +78,18 @@ public class systemManager
         // prints the result of the function writeModbus (Write Multiple Coils) 
         System.out.println(protocolToPLC.writeModbus(0,b));
         
+        */
         
 
+
+        
+
+
+        
+        
+        
+        
+        
         
         
        // creates a database object
